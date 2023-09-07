@@ -42,13 +42,14 @@ class EmbeddingHelper:
         embeddings_list = embeddings.tolist()
         return embeddings_list
 
-    def get_embeddings_query(self, query: str, model_id: str)->Tensor:
+    def get_embeddings_query(self, query: str, model_id: str)->List:
         logger.info(f'Getting embeddings for {query}')
         batch_dict = self.tokenizer(query, max_length=512, padding=True, truncation=True, return_tensors='pt')
         with torch.no_grad():
             outputs = self.model(**batch_dict)
         embeddings = self.average_pool(outputs.last_hidden_state, batch_dict['attention_mask'])
         embeddings = F.normalize(embeddings, p=2, dim=1)
+        embeddings = embeddings.tolist()[0]
 
         return embeddings
 

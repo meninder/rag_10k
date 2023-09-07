@@ -161,4 +161,5 @@ class OpenSearchClient:
     def search_documents(self, query_embedding, filename, k)->List:
         body = self.get_body_query_efficient(query_embedding, filename, k)
         res = self.client.search(index=self.index_name, body=body)
-        return res
+        response = [(r['_score'], r["_source"]["text"]) for r in res["hits"]["hits"]]
+        return response
